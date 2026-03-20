@@ -32,7 +32,7 @@ html, body {
 
 /* Image scaling */
 .bottom-image img {
-  display: block; /* removes tiny whitespace under image */
-  width: clamp(280px, 40vw, 900px);
+  display: block;
+  width: clamp(320px, 90vw, 1200px);
   height: auto;
 }
