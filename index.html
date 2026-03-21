@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ALEC.ST | COMING SOON</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #020202;
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+    }
+
+    .image-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+    }
+
+    .image-wrapper img {
+      height: 60vh;   /* ✅ balanced size */
+      width: auto;
+      object-fit: contain;
+    }
+
+    /* Slightly larger on desktop, but not overwhelming */
+    @media (min-width: 1024px) {
+      .image-wrapper img {
+        height: 70vh;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="image-wrapper">
+    <img src="alecST_green.png" alt="Coming Soon Sign" />
+  </div>
+
+</body>
+</html>
