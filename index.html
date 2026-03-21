@@ -23,20 +23,29 @@
       align-items: flex-end;
     }
 
+    /* MATRIX CANVAS */
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
     .image-wrapper {
       width: 100%;
       display: flex;
       justify-content: center;
       align-items: flex-end;
+      position: relative;
+      z-index: 1; /* stays above matrix */
     }
 
     .image-wrapper img {
-      height: 60vh;   /* ✅ balanced size */
+      height: 60vh;
       width: auto;
       object-fit: contain;
     }
 
-    /* Slightly larger on desktop, but not overwhelming */
     @media (min-width: 1024px) {
       .image-wrapper img {
         height: 70vh;
@@ -46,9 +55,55 @@
 </head>
 <body>
 
+  <canvas id="matrix"></canvas>
+
   <div class="image-wrapper">
     <img src="alecST_green.png" alt="Coming Soon Sign" />
   </div>
+
+  <script>
+    const canvas = document.getElementById("matrix");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()*&^%";
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+
+    const drops = [];
+    for (let i = 0; i < columns; i++) {
+      drops[i] = Math.random() * canvas.height;
+    }
+
+    function draw() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "#00ff66"; // MATRIX GREEN
+      ctx.font = fontSize + "px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters.charAt(Math.floor(Math.random() * letters.length));
+        ctx.fillText(text, i * fontSize, drops[i]);
+
+        if (drops[i] > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+
+        drops[i] += fontSize;
+      }
+    }
+
+    setInterval(draw, 33);
+
+    // Resize fix
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
 
 </body>
 </html>
