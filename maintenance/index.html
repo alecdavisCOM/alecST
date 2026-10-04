@@ -1,128 +1,357 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Redirect after 10 seconds to destination URL -->
-  <meta http-equiv="refresh" content="4;url=https://alecdavis.com">
-  <title>ALEC.ST</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Down for Maintenance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #00ff66;
+    --green-dim: #00aa44;
+    --red: #ff2a4d;
+    --cyan: #00e5ff;
+    --bg: #000;
+  }
 
-    html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background-color: #000;
-    }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    /* Mobile-optimized full-screen centered canvas */
-    #sequence-canvas {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 100vw;
-      height: 100vh;
-      transform: translate(-50%, -50%);
-      object-fit: cover;
-      display: block;
-    }
-  </style>
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--green);
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+  }
+
+  /* ---------- Image sequence ---------- */
+  #sequence {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+  }
+
+  /* ---------- Glitching black overlay ---------- */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    background: #000;
+    opacity: 0.55;
+    pointer-events: none;
+    animation: flicker 4s infinite steps(1);
+  }
+
+  .overlay::before,
+  .overlay::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 100%;
+    background: #000;
+  }
+
+  /* glitch bars that jump around */
+  .overlay::before {
+    height: 14%;
+    top: 20%;
+    animation: bar1 2.7s infinite steps(1);
+  }
+  .overlay::after {
+    height: 6%;
+    top: 70%;
+    animation: bar2 3.3s infinite steps(1);
+  }
+
+  @keyframes flicker {
+    0%   { opacity: .55; }
+    7%   { opacity: .75; transform: translateX(-6px); }
+    8%   { opacity: .55; transform: none; }
+    31%  { opacity: .4;  }
+    32%  { opacity: .55; }
+    55%  { opacity: .85; transform: translateX(8px) skewX(2deg); }
+    56%  { opacity: .55; transform: none; }
+    57%  { opacity: .7;  transform: translateX(-3px); }
+    58%  { opacity: .55; transform: none; }
+    82%  { opacity: .45; }
+    83%  { opacity: .55; }
+  }
+
+  @keyframes bar1 {
+    0%   { top: 20%; height: 14%; opacity: 0; }
+    10%  { top: 12%; height: 3%;  opacity: .9; }
+    12%  { opacity: 0; }
+    40%  { top: 48%; height: 9%;  opacity: .8; }
+    42%  { opacity: 0; }
+    71%  { top: 80%; height: 2%;  opacity: 1; }
+    73%  { top: 33%; height: 18%; opacity: .6; }
+    75%  { opacity: 0; }
+  }
+
+  @keyframes bar2 {
+    0%   { opacity: 0; }
+    18%  { top: 64%; height: 5%;  opacity: .9; }
+    20%  { opacity: 0; }
+    52%  { top: 5%;  height: 10%; opacity: .7; }
+    53%  { top: 22%; height: 1%;  opacity: 1; }
+    55%  { opacity: 0; }
+    88%  { top: 90%; height: 4%;  opacity: .8; }
+    90%  { opacity: 0; }
+  }
+
+  /* scanlines */
+  .scanlines {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0) 0px,
+      rgba(0,0,0,0) 2px,
+      rgba(0,0,0,.35) 3px,
+      rgba(0,0,0,0) 4px
+    );
+  }
+
+  /* rolling CRT band */
+  .scanlines::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 120px;
+    background: linear-gradient(to bottom, transparent, rgba(0,255,102,.06), transparent);
+    animation: roll 6s linear infinite;
+  }
+  @keyframes roll {
+    from { top: -120px; }
+    to   { top: 100%; }
+  }
+
+  /* vignette */
+  .vignette {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,.85) 100%);
+  }
+
+  /* ---------- Terminal ---------- */
+  .terminal {
+    position: fixed;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+
+  .term-box {
+    width: min(760px, 100%);
+    padding: 22px 24px 26px;
+    background: rgba(0, 10, 4, .35);
+    border: 1px solid rgba(0,255,102,.35);
+    box-shadow: 0 0 30px rgba(0,255,102,.12), inset 0 0 30px rgba(0,255,102,.05);
+    font-size: clamp(13px, 1.6vw, 16px);
+    line-height: 1.65;
+    text-shadow: 0 0 6px rgba(0,255,102,.7);
+  }
+
+  .term-head {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8em;
+    color: var(--green-dim);
+    border-bottom: 1px dashed rgba(0,255,102,.3);
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+    letter-spacing: .08em;
+  }
+  .term-head .rec::before {
+    content: '● ';
+    color: var(--red);
+    text-shadow: 0 0 6px var(--red);
+    animation: blink 1s steps(1) infinite;
+  }
+
+  #output { white-space: pre-wrap; word-break: break-word; }
+  #output .dim   { color: var(--green-dim); }
+  #output .cyan  { color: var(--cyan); text-shadow: 0 0 6px rgba(0,229,255,.7); }
+  #output .ok    { color: var(--green); font-weight: 700; }
+
+  /* the main message */
+  #output .msg {
+    display: inline-block;
+    margin-top: .4em;
+    font-size: 1.45em;
+    font-weight: 700;
+    color: #eafff1;
+    text-shadow: 0 0 8px var(--green), 0 0 20px rgba(0,255,102,.5);
+  }
+  #output .msg.glitch { animation: textglitch 3.5s infinite; }
+
+  @keyframes textglitch {
+    0%, 92%, 100% { text-shadow: 0 0 8px var(--green), 0 0 20px rgba(0,255,102,.5); transform: none; }
+    93% { text-shadow: -3px 0 var(--red), 3px 0 var(--cyan); transform: translateX(2px); }
+    95% { text-shadow: 3px 0 var(--red), -3px 0 var(--cyan); transform: translateX(-2px) skewX(-4deg); }
+    97% { text-shadow: -1px 0 var(--red), 1px 0 var(--cyan); transform: none; }
+  }
+
+  .cursor {
+    display: inline-block;
+    width: .6em;
+    height: 1.1em;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    vertical-align: text-bottom;
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .overlay, .overlay::before, .overlay::after,
+    .scanlines::after, #output .msg.glitch { animation: none; }
+  }
+</style>
 </head>
 <body>
 
-  <canvas id="sequence-canvas"></canvas>
+  <canvas id="sequence" aria-hidden="true"></canvas>
+  <div class="overlay"></div>
+  <div class="scanlines"></div>
+  <div class="vignette"></div>
 
-  <script>
-    const CONFIG = {
-      totalFrames: 192,         // frame_000000.webp to frame_000191.webp
-      paddingDigits: 6,         // 6-digit zero padding (e.g. 000000)
-      fps: 60,                  // Target 30 FPS
-      dir: './img/',            // Directory containing webp images
-      prefix: 'frame_',         // File prefix
-      ext: '.webp'              // File extension
+  <main class="terminal">
+    <div class="term-box" role="status" aria-live="polite">
+      <div class="term-head">
+        <span>root@alecdavis:~</span>
+        <span class="rec">MAINTENANCE</span>
+      </div>
+      <div id="output"></div><span class="cursor"></span>
+    </div>
+  </main>
+
+<script>
+/* ===================== Image sequence ===================== */
+(function () {
+  const TOTAL = 240;
+  const FPS = 24;
+  const canvas = document.getElementById('sequence');
+  const ctx = canvas.getContext('2d');
+  const frames = new Array(TOTAL);
+  let loaded = 0;
+
+  const src = i => 'img/frame_' + String(i).padStart(6, '0') + '.webp';
+
+  for (let i = 0; i < TOTAL; i++) {
+    const img = new Image();
+    img.decoding = 'async';
+    img.onload = () => {
+      loaded++;
+      if (i === 0) { sizeCanvas(img); draw(0); }
     };
+    img.src = src(i);
+    frames[i] = img;
+  }
 
-    const canvas = document.getElementById('sequence-canvas');
-    const ctx = canvas.getContext('2d');
-    const images = [];
-    let currentFrame = 0;
-    let lastFrameTime = 0;
-    const frameInterval = 1000 / CONFIG.fps;
+  function sizeCanvas(img) {
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    fit();
+  }
 
-    // Pad number with leading zeros (e.g., 5 -> "000005")
-    function padZero(num, size) {
-      let s = num + "";
-      while (s.length < size) s = "0" + s;
-      return s;
+  // Desktop: fit the whole frame in the viewport.
+  // Mobile/portrait: zoom to cover the screen so the character fills the phone.
+  const mobile = matchMedia('(max-width: 768px), (orientation: portrait)');
+  function fit() {
+    if (!canvas.width) return;
+    const sx = innerWidth / canvas.width, sy = innerHeight / canvas.height;
+    const s = mobile.matches ? Math.max(sx, sy) : Math.min(sx, sy);
+    canvas.style.width = canvas.width * s + 'px';
+    canvas.style.height = canvas.height * s + 'px';
+  }
+  addEventListener('resize', fit);
+
+  function draw(i) {
+    const img = frames[i];
+    if (img && img.complete && img.naturalWidth) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
     }
+  }
 
-    // Resize canvas resolution to match natural image aspect ratio or window display
-    function resizeCanvas() {
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
-    }
+  let start = null;
+  function tick(t) {
+    if (start === null) start = t;
+    const frame = Math.floor(((t - start) / 1000) * FPS) % TOTAL;
+    draw(frame);
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
 
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
+/* ===================== Hacker typing ===================== */
+(function () {
+  const out = document.getElementById('output');
 
-    // Draw current frame to canvas using "cover" positioning logic
-    function drawFrame(img) {
-      if (!img || !img.complete || img.naturalWidth === 0) return;
+  // Each step: text to type, a class, and whether it's typed or dumped instantly
+  const script = [
+    { t: '$ ssh root@alecdavis.com\n', c: 'dim', speed: 35 },
+    { t: '[+] connection established\n', c: 'cyan', instant: true, pause: 300 },
+    { t: '$ sudo ./deploy --maintenance\n', c: 'dim', speed: 40 },
+    { t: '[*] stopping services........ ', c: 'dim', instant: true, pause: 450 },
+    { t: 'OK\n', c: 'ok', instant: true, pause: 200 },
+    { t: '[*] patching core modules.... ', c: 'dim', instant: true, pause: 600 },
+    { t: 'OK\n', c: 'ok', instant: true, pause: 200 },
+    { t: '[*] optimizing.............. ', c: 'dim', instant: true, pause: 500 },
+    { t: 'OK\n', c: 'ok', instant: true, pause: 400 },
+    { t: '$ echo "$STATUS"\n', c: 'dim', speed: 50, pause: 350 },
+    { t: "I'll be right back, just performing some updates", c: 'msg', speed: 55, human: true },
+  ];
 
-      const cw = canvas.width;
-      const ch = canvas.height;
-      const iw = img.naturalWidth;
-      const ih = img.naturalHeight;
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-      // Calculate object-fit: cover dimensions
-      const scale = Math.max(cw / iw, ch / ih);
-      const nw = iw * scale;
-      const nh = ih * scale;
-      const cx = (cw - nw) / 2;
-      const cy = (ch - nh) / 2;
+  async function typeLine(step) {
+    const span = document.createElement('span');
+    span.className = step.c || '';
+    out.appendChild(span);
 
-      ctx.clearRect(0, 0, cw, ch);
-      ctx.drawImage(img, cx, cy, nw, nh);
-    }
-
-    // Animation loop locked to target 30 FPS
-    function animate(currentTime) {
-      requestAnimationFrame(animate);
-
-      if (!lastFrameTime) lastFrameTime = currentTime;
-      const elapsed = currentTime - lastFrameTime;
-
-      if (elapsed >= frameInterval) {
-        lastFrameTime = currentTime - (elapsed % frameInterval);
-
-        const img = images[currentFrame];
-        if (img && img.complete) {
-          drawFrame(img);
+    if (step.instant) {
+      span.textContent = step.t;
+    } else {
+      for (const ch of step.t) {
+        // occasional typo + backspace for the main line, like a real person
+        if (step.human && /[a-z]/.test(ch) && Math.random() < 0.04) {
+          const wrong = String.fromCharCode(97 + Math.floor(Math.random() * 26));
+          span.textContent += wrong;
+          await sleep(step.speed * 2);
+          span.textContent = span.textContent.slice(0, -1);
+          await sleep(step.speed * 1.5);
         }
-
-        currentFrame = (currentFrame + 1) % CONFIG.totalFrames;
+        span.textContent += ch;
+        let d = step.speed + Math.random() * step.speed;
+        if (ch === ' ') d += 30;
+        if (ch === ',') d += 250;
+        await sleep(d);
       }
     }
+    if (step.c === 'msg') span.classList.add('glitch');
+    await sleep(step.pause || 120);
+  }
 
-    // Preload WebP sequence
-    function preloadImages() {
-      for (let i = 0; i < CONFIG.totalFrames; i++) {
-        const img = new Image();
-        const frameNum = padZero(i, CONFIG.paddingDigits);
-        img.src = `${CONFIG.dir}${CONFIG.prefix}${frameNum}${CONFIG.ext}`;
-        images.push(img);
-      }
-    }
-
-    // Start loading and animation loop
-    preloadImages();
-    requestAnimationFrame(animate);
-  </script>
+  (async function run() {
+    await sleep(600);
+    for (const step of script) await typeLine(step);
+  })();
+})();
+</script>
 </body>
 </html>
